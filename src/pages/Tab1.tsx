@@ -1,24 +1,42 @@
-import React from 'react';
-import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/react';
-import ExploreContainer from '../components/ExploreContainer';
+import React, {useState} from 'react';
+import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonButton} from '@ionic/react';
 import './Tab1.css';
+import Products from '../Products';
+import Cart from '../Cart';
 
 const Tab1: React.FC = () => {
+
+  const [cart, setCart] = useState([] as any);  
+  const [page, setPage] = useState('products')
+
+  const addToCart = (product: any) => {
+    setCart([...cart, {...product}]);  // destruct, new object reference
+  };
+
+  const removeFromCart = (productToMove) => {
+    setCart(cart.filter(product => product !== productToMove))
+  };
+
+  const navigateTo = (nextPage:any) => {
+    setPage(nextPage)
+  }
+
   return (
     <IonPage>
+
       <IonHeader>
         <IonToolbar>
-          <IonTitle>Tab 1</IonTitle>
+          <IonTitle>Robot Shop</IonTitle>
+          <IonButton onClick={() => navigateTo('products')}slot="end" >View Products</IonButton>
+          <IonButton onClick={() => navigateTo('cart')}slot="end" >Items in cart: {cart.length}</IonButton>
         </IonToolbar>
       </IonHeader>
-      <IonContent fullscreen>
-        <IonHeader collapse="condense">
-          <IonToolbar>
-            <IonTitle size="large">Tab 1</IonTitle>
-          </IonToolbar>
-        </IonHeader>
-        <ExploreContainer name="Tab 1 page" />
+
+      <IonContent>
+        {page == 'products' && <Products addToCart={addToCart} />}
+        {page == 'cart' && <Cart cart={cart} removeFromCart={removeFromCart}/>}
       </IonContent>
+
     </IonPage>
   );
 };
